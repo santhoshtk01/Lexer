@@ -1,7 +1,9 @@
 #include "token_spec.h"
 #include "buff_manager.h"
 #include <string.h>
+#include "stack.h"
 
+extern Stack stk;
 
 // Language: [_a-zA-Z]
 bool letter(void){
@@ -71,8 +73,21 @@ bool keyword(char *str){
 
 // Language: {C Operators}
 bool opr(void){
-    if(strchr(operators, peek())){
+    char first = peek();
+    if(strchr(operators, first)){
         advance();
+
+        char second = peek();
+
+        // Lookahead for ++, --, shorthand assignment
+        if((first == '+' && second == '+' )||  
+            (first == '-' && second == '-')||
+            second == '=') advance();
+        
+        // Lookahead for logical operators
+        if((first == '|' && second == '|') ||
+            (first == '&' && second == '&')) advance();
+
         return 1;
     }
 
@@ -82,7 +97,22 @@ bool opr(void){
 
 // Language: {C Special chars}
 bool special_chars(void){
-    if(strchr(special_characters, peek())){
+    char temp = peek();
+    
+    if(strchr(special_characters, temp)){
+
+        // If the special char is (, { or [ push into stack
+        if(temp == '(' || temp == '{' || temp == '['){
+            push(&stk, temp);
+        }
+        else{
+            char tos = top(&stk);
+
+            if((temp == ')' && tos == '(') || (temp == '}' && tos == '{') || (temp == ']' && tos == '[')){
+                pop(&stk);
+            }
+        }
+
         advance();
         return 1;
     }
@@ -134,6 +164,19 @@ int char_or_string(void){
         advance(); // "
 
         return 2;
+    }
+
+    return 0;
+}
+
+
+bool preprocessor(void){
+    if(peek() == '#'){
+        advance();
+
+        while(peek() != '\n') advance();
+
+        return 1;
     }
 
     return 0;

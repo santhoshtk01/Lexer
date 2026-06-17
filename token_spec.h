@@ -18,8 +18,6 @@ static const char* operators = "+-*/%=!<>|&";
 // Special Characters
 static const char* special_characters = ",;{}()[]";
 
-
-
 // Language: [_a-zA-Z]
 bool letter(void);
 
@@ -55,5 +53,7 @@ int integer_or_float(void);
 // Language: {Char and string literal}
 int char_or_string(void);
 
+// Language: [#]
+bool preprocessor(void);
 
 #endif

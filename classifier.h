@@ -12,7 +12,23 @@ enum type{
     L_FLOAT,
     L_CHAR,
     L_STRING,
-    UNKNOWN
+    PREPROCESSOR,
+    UNKNOWN,
+    END_OF_FILE
+};
+
+static char *token_name[] = {
+    "IDENTIFIER",
+    "KEYWORD",
+    "OPERATOR",
+    "SPECIAL_CHAR",
+    "L_INTEGER",
+    "L_FLOAT",
+    "L_CHAR",
+    "L_STRING",
+    "PREPROCESSOR",
+    "UNKNOWN",
+    "END_OF_FILE"
 };
 
 // Token: <lexme, type>

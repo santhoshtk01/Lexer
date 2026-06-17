@@ -1,54 +1,42 @@
 #include <stdio.h>
 #include "stack.h"
 #include "token_spec.h"
+#include "classifier.h"
+#include "helper.h"
+
+Stack stk;
+
+int main(int argc, char *argv[]){
+
+    validate_file_name(argv[1]);
+    init_stack(&stk);
 
 
-int main(void){
+    while(1){
+
+        // Testing Classifier
+        Token t = get_next_token();
+
+        if(t.token_type == END_OF_FILE || t.token_type == UNKNOWN){
+            printf("< Lexeme: %-25s Type: %-15s >\n", t.lexme, token_name[t.token_type]);
+            break;
+        }
+
+        printf("< Lexeme: %-25s Type: %-15s >\n", t.lexme, token_name[t.token_type]);
+    }
+
+    // Check if any brackets are missing
+    if(stk.top >= 0){
+        printf("\n====================ERRORS=====================\n\n");
+        printf("E: No matching brackets found: ");
+        for(int i = 0; i <= stk.top; i++){
+            printf("%c ", stk.values[i]);
+        }
+
+        printf("\n\n");
+    }
 
 
-    // Testing Token Specifications
-    // printf("%d", letter());
-
-    // printf("%d", number());
-
-    // printf("%d", identifier());
-
-    // printf("%d", keyword("int"));
-
-    // printf("%d", whitespace());
-
-    // printf("%d", opr());
-
-    // printf("%d", special_chars());
-
-    // printf("%d", integer_or_float());
-
-    printf("%d", char_or_string());
-
-
-
-
-
-
-
-
-
-
-
-
-    // // New stack creation
-    // Stack stack;
-    // stack.top = -1;
-
-    // // To Push
-    // push(&stack, 'A');
-
-    // // To check overflow
-    // for(unsigned int i = 100; i--;) push(&stack, 'A');
-
-    // // To Pop
-    // // printf("%c", pop(&stack));
-    // // pop(&stack); // Error
 
     return 0;
 }

@@ -1,6 +1,10 @@
 #include "stack.h"
 #include <stdio.h>
 
+// To initialize the stack
+void init_stack(Stack *stk){
+    stk->top = -1;
+}
 
 // To push a character into stack
 void push(Stack *stk, char ch){
@@ -26,4 +30,10 @@ char pop(Stack *stk){
     }
 
     return stk->values[stk->top--];
+}
+
+
+// Top of the stack
+char top(Stack *stk){
+    return stk->values[stk->top];
 }

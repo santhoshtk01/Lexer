@@ -11,8 +11,19 @@ extern char buffer[];
 Token classify_lexeme(void){
 
     Token curr_token;
+    int temp;
 
-    while(whitespace()); // removes whitespaces if any
+    // Check if NULL or EOF reached
+    if(buffer[lexeme_end] == '\0' || buffer[lexeme_end] == EOF){
+        curr_token.token_type = END_OF_FILE;
+        curr_token.lexme[0] = '\0';
+
+        return curr_token;
+    }
+ 
+    // Edge case: When we find a whitespace, we do need to move the
+    // lexme_start as well
+    while(whitespace()) lexeme_start++;
 
     if(identifier()){
         curr_token.token_type = IDENTIFIER;
@@ -26,15 +37,19 @@ Token classify_lexeme(void){
         curr_token.token_type = SPECIAL_CHAR;
     }
 
-    else if(integer_or_float()){
+    else if(temp = integer_or_float()){
         // Change integer_or_float() function's return type to int,
         // 0 - no match, 1 - Int, 2 - float
-        curr_token.token_type = L_INTEGER;
+        if(temp == 1) curr_token.token_type = L_INTEGER;
+        else curr_token.token_type = L_FLOAT;
     }
 
-    else if(char_or_string()){
-        // Same as the above function
-        curr_token.token_type = L_FLOAT;
+    else if(temp = char_or_string()){
+        if(temp == 1) curr_token.token_type = L_CHAR;
+        else curr_token.token_type = L_STRING;
+    }
+    else if(preprocessor()){
+        curr_token.token_type = PREPROCESSOR;
     }
     else{
         curr_token.token_type = UNKNOWN;
@@ -42,10 +57,13 @@ Token classify_lexeme(void){
 
 
     // The current lexeme value is from lemexe_state - lexeme_end pos in buff
-    for(unsigned int i = lexeme_start; i <= lexeme_end; i++){
+    unsigned int i = lexeme_start;
+    for( ;i < lexeme_end; i++){
         curr_token.lexme[i - lexeme_start] = buffer[i];
     }
+    curr_token.lexme[i - lexeme_start] = '\0';
 
+    
     // Resetting for next lexeme
     lexeme_start = lexeme_end;
 
