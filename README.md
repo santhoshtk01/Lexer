@@ -58,9 +58,25 @@ LEXER/
 ```
 
 
-## Build and Run
+## *Build and Run*
 1. Move into the directory you want this project to be downloaded
 
     ```
-    git clone ""
+    $ git clone "https://github.com/santhoshtk01/Lexer.git"
     ```
+2. Change the working directory to `Lexer`
+    ```
+    $ cd Lexer
+    ```
+3. Build the project using `make`
+    ```
+    $ make
+    ```
+4. Run the poject with the `.c` source file. Already one availbe in **Test/**
+    ```
+    $ ./lexer Test/test.c
+    ```
+
+---
+
+[Click here to Watch Demo Video](https://youtu.be/8QAC2aFhD-g)

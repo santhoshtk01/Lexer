@@ -1,7 +1,7 @@
 #ifndef BUFF_MANAGER
 #define BUFF_MANAGER
 #include <stdio.h>
-#define BUFF_SIZE   10
+#define BUFF_SIZE   100
 
 #define ON          1
 #define OFF         0
