@@ -5,7 +5,12 @@
 
 extern unsigned int lexeme_start;
 extern unsigned int lexeme_end;
-extern char buffer[];
+
+extern char *buffer;
+extern char buffer1[];
+extern char buffer2[];
+extern char flag_buff2;
+extern size_t bytes_read;
 
 
 Token classify_lexeme(void){
@@ -14,7 +19,7 @@ Token classify_lexeme(void){
     int temp;
 
     // Check if NULL or EOF reached
-    if(buffer[lexeme_end] == '\0' || buffer[lexeme_end] == EOF){
+    if(buffer[lexeme_end % BUFF_SIZE] == '\0' || buffer[lexeme_end % BUFF_SIZE] == EOF){
         curr_token.token_type = END_OF_FILE;
         curr_token.lexme[0] = '\0';
 
@@ -23,7 +28,7 @@ Token classify_lexeme(void){
  
     // Edge case: When we find a whitespace, we do need to move the
     // lexme_start as well
-    while(whitespace()) lexeme_start++;
+    while(whitespace());
 
     if(identifier()){
         curr_token.token_type = IDENTIFIER;
@@ -56,13 +61,58 @@ Token classify_lexeme(void){
     }
 
 
-    // The current lexeme value is from lemexe_state - lexeme_end pos in buff
-    unsigned int i = lexeme_start;
-    for( ;i < lexeme_end; i++){
-        curr_token.lexme[i - lexeme_start] = buffer[i];
-    }
-    curr_token.lexme[i - lexeme_start] = '\0';
+    /* 
+    There are three possible cases:
+        1. lexeme in buffer1
+        2. lexeme in buffer2
+        3. lexeme in buffer1 and buffer2
+        4. lexeme in buffer2 and buffer1
+    */
 
+    unsigned int lexeme_index = 0; // to track the pos in strcut lexeme member
+
+    if(lexeme_start < BUFF_SIZE && lexeme_end < BUFF_SIZE){
+        // Case 1
+        for(unsigned int i = lexeme_start; i < lexeme_end; i++){
+            curr_token.lexme[lexeme_index++] = buffer1[i];
+        }
+        curr_token.lexme[lexeme_index] = '\0';
+    }
+    else if(lexeme_start < BUFF_SIZE && lexeme_end > BUFF_SIZE){
+        // Case 3
+        // Fill from buff1
+        for(unsigned int i = lexeme_start; i < BUFF_SIZE; i++){
+            curr_token.lexme[lexeme_index++] = buffer1[i];
+        }
+
+        // Fill from buff2
+        for(unsigned int i = 0; i < lexeme_end % BUFF_SIZE; i++){
+            curr_token.lexme[lexeme_index++] = buffer2[i];
+        }
+
+        curr_token.lexme[lexeme_index] = '\0';
+    }
+    else if(lexeme_start > BUFF_SIZE && lexeme_end > BUFF_SIZE){
+        // Case 2
+        for(unsigned int i = lexeme_start; i < lexeme_end; i++){
+            curr_token.lexme[lexeme_index++] = buffer2[i % BUFF_SIZE];
+        }
+        curr_token.lexme[lexeme_index] = '\0';
+    }
+    else{
+        // Case 4
+        // Fill from buff2
+        for(unsigned int i = lexeme_start; i < BUFF_SIZE; i++){
+            curr_token.lexme[lexeme_index++] = buffer2[i % BUFF_SIZE];
+        }
+
+        // Fill from buff1
+        for(unsigned int i = 0; i < lexeme_end % BUFF_SIZE; i++){
+            curr_token.lexme[lexeme_index++] = buffer1[i];
+        }
+
+        curr_token.lexme[lexeme_index] = '\0';
+    }
     
     // Resetting for next lexeme
     lexeme_start = lexeme_end;
@@ -73,6 +123,11 @@ Token classify_lexeme(void){
         curr_token.token_type = KEYWORD;
     }
     
+    if(lexeme_end % BUFF_SIZE >= bytes_read){
+        curr_token.token_type = END_OF_FILE;
+        curr_token.lexme[0] = '\0';
+    }
+
 
     return curr_token;
 }

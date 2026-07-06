@@ -1,7 +1,10 @@
 #ifndef BUFF_MANAGER
 #define BUFF_MANAGER
 #include <stdio.h>
-#define BUFF_SIZE   512
+#define BUFF_SIZE   10
+
+#define ON          1
+#define OFF         0
 
 // Move the lexeme_end to next position
 void advance(void);

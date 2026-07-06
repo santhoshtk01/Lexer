@@ -4,6 +4,7 @@
 #include "stack.h"
 
 extern Stack stk;
+extern unsigned int lexeme_start;
 
 // Language: [_a-zA-Z]
 bool letter(void){
@@ -38,6 +39,7 @@ bool whitespace(void){
     char temp = peek();
 
     if(temp == ' ' || temp == '\t' || temp == '\n'){
+        lexeme_start++;
         advance();
         return 1;
     }
