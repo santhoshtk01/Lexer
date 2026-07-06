@@ -79,4 +79,4 @@ LEXER/
 
 ---
 
-[Click here to Watch Demo Video](https://youtu.be/8QAC2aFhD-g)
+[▶ Watch Demo on YouTube](https://youtu.be/8QAC2aFhD-g)
